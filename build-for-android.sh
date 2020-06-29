@@ -10,7 +10,6 @@ BASE_DIR=$(cd `dirname $0`; pwd)
 
 
 echo "NDK="$NDK
-echo "TOOLCHAIN="$TOOLCHAIN
 echo "BASE_DIR="$BASE_DIR
 
 
@@ -47,6 +46,26 @@ make install
 cd $BASE_DIR
 }
 
+function build_x264
+{
+cd ../libx264
+
+./configure \
+--prefix=$X264_DIR \
+--enable-static \
+--enable-pic \
+--enable-shared \
+--disable-asm \
+--disable-cli \
+--cross-prefix=$CROSS_COMPILE \
+--host=arm-linux \
+--sysroot=$SYSROOT
+
+make -j16
+make install
+
+cd $BASE_DIR
+}
 
 function build_ffmpeg
 {
@@ -110,8 +129,14 @@ cd ../FFmpeg
 --enable-libfdk_aac \
 --enable-encoder=libfdk_aac \
 --enable-decoder=aac \
---enable-decoder=h264 \
+--enable-jni \
+--enable-mediacodec \
+--enable-decoder=h264_mediacodec \
+--enable-decoder=hevc_mediacodec \
+--enable-libx264 \
+--enable-encoder=libx264 \
 --enable-decoder=hevc \
+--enable-decoder=h264 \
 --enable-decoder=mp3 \
 --enable-demuxer=mp3 \
 --enable-demuxer=aac \
@@ -124,9 +149,10 @@ cd ../FFmpeg
 --enable-muxer=adts \
 --enable-parser=aac \
 --enable-bsf=aac_adtstoasc \
+--enable-bsf=h264_mp4toannexb \
 --enable-protocol=file \
---extra-cflags="-O3 -finline-limit=1000 -fPIC -DANDROID $ADDI_CFLAGS -I$FDK_INC" \
---extra-ldflags="$ADDI_LDFLAGS -L$FDK_LIB" \
+--extra-cflags="-O3 -finline-limit=1000 -fPIC -DANDROID $ADDI_CFLAGS -I$FDK_INC -I$X264_INC" \
+--extra-ldflags="$ADDI_LDFLAGS -L$FDK_LIB -L$X264_LIB" \
 $ADDITIONAL_CONFIGURE_FLAG
 
 make clean
@@ -145,6 +171,7 @@ mkdir -p $OUTPUT_DIR/lib
 
 echo "CROSS_COMPILE="$CROSS_COMPILE
 echo "FDK_DIR="$FDK_DIR
+echo "X264_DIR="$X264_DIR
 echo "FFMPEG_DIR="$FFMPEG_DIR
 echo "OUTPUT_DIR="$OUTPUT_DIR
 echo "merge lib ..."
@@ -154,6 +181,7 @@ cp -r $FFMPEG_INC/* $OUTPUT_DIR/include
 
 ${CROSS_COMPILE}ld -rpath-link=$SYSROOT/usr/lib -L$SYSROOT/usr/lib -L$PREFIX/lib -soname $OUTPUT_NAME -shared -nostdlib -Bsymbolic --whole-archive --no-undefined -o $OUTPUT_DIR/lib/$OUTPUT_NAME \
     $FDK_LIB/libfdk-aac.a \
+    $X264_LIB/libx264.a \
     $FFMPEG_LIB/libavcodec.a \
     $FFMPEG_LIB/libswresample.a \
     $FFMPEG_LIB/libswscale.a \
@@ -168,17 +196,22 @@ function build_one
 {
 CROSS_COMPILE=${TOOLCHAIN}/bin/${CROSS_PREFIX_BUILD_TOOL_PATH}
 
-FDK_DIR=$BASE_DIR/binary/fdkaac/$CPU
+FDK_DIR=$BASE_DIR/binary/android/fdkaac/$CPU
 FDK_INC=$FDK_DIR/include
 FDK_LIB=$FDK_DIR/lib
 
-FFMPEG_DIR=$BASE_DIR/binary/ffmpeg/$CPU
+X264_DIR=$BASE_DIR/binary/android/x264/$CPU
+X264_INC=$X264_DIR/include
+X264_LIB=$X264_DIR/lib
+
+FFMPEG_DIR=$BASE_DIR/binary/android/ffmpeg/$CPU
 FFMPEG_INC=$FFMPEG_DIR/include
 FFMPEG_LIB=$FFMPEG_DIR/lib
 
-OUTPUT_DIR=$BASE_DIR/output/$CPU
+OUTPUT_DIR=$BASE_DIR/output/android/$CPU
 
 build_fdkaac
+build_x264
 build_ffmpeg
 merge_lib
 }
