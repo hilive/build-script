@@ -69,7 +69,7 @@ cd $BASE_DIR
 
 function build_ffmpeg
 {
-cd ../FFmpeg
+cd ../ffmpeg-3.3
 
 ./configure \
 --prefix=$FFMPEG_DIR \
@@ -133,6 +133,9 @@ cd ../FFmpeg
 --enable-mediacodec \
 --enable-decoder=h264_mediacodec \
 --enable-decoder=hevc_mediacodec \
+--enable-encoder=h264_mediacodec \
+--enable-hwaccel=h264_mediacodec \
+--enable-hwaccel=hevc_mediacodec \
 --enable-libx264 \
 --enable-encoder=libx264 \
 --enable-decoder=hevc \
@@ -188,7 +191,7 @@ ${CROSS_COMPILE}ld -rpath-link=$SYSROOT/usr/lib -L$SYSROOT/usr/lib -L$PREFIX/lib
     $FFMPEG_LIB/libavformat.a \
     $FFMPEG_LIB/libavfilter.a \
     $FFMPEG_LIB/libavutil.a \
-    -lc -lm -lz -ldl -llog --dynamic-linker=/system/bin/linker $TOOLCHAIN/lib/gcc/$HOST/4.9.x/libgcc.a
+    -lc -lm -lz -ldl -llog -lmediandk --dynamic-linker=/system/bin/linker $TOOLCHAIN/lib/gcc/$HOST/4.9.x/libgcc.a
 
 }
 
@@ -210,8 +213,8 @@ FFMPEG_LIB=$FFMPEG_DIR/lib
 
 OUTPUT_DIR=$BASE_DIR/output/android/$CPU
 
-build_fdkaac
-build_x264
+#build_fdkaac
+#build_x264
 build_ffmpeg
 merge_lib
 }
