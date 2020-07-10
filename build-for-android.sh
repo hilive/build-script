@@ -103,6 +103,7 @@ cd ../ffmpeg-3.3
 --disable-ffprobe \
 --disable-ffplay \
 --disable-ffmpeg \
+--disable-ffserver \
 --disable-debug \
 --disable-symver \
 --disable-stripping \
@@ -133,6 +134,7 @@ cd ../ffmpeg-3.3
 --enable-mediacodec \
 --enable-decoder=h264_mediacodec \
 --enable-decoder=hevc_mediacodec \
+--enable-decoder=mpeg4_mediacodec \
 --enable-encoder=h264_mediacodec \
 --enable-hwaccel=h264_mediacodec \
 --enable-hwaccel=hevc_mediacodec \
@@ -148,13 +150,14 @@ cd ../ffmpeg-3.3
 --enable-demuxer=mpegvideo \
 --enable-demuxer=m4v \
 --enable-demuxer=mov \
+--enable-demuxer=wmv \
 --enable-muxer=mp4 \
 --enable-muxer=adts \
 --enable-parser=aac \
 --enable-bsf=aac_adtstoasc \
 --enable-bsf=h264_mp4toannexb \
 --enable-protocol=file \
---extra-cflags="-O3 -finline-limit=1000 -fPIC -DANDROID $ADDI_CFLAGS -I$FDK_INC -I$X264_INC" \
+--extra-cflags="-O3 -finline-limit=1000 -fPIC -DANDROID -DHILIVE_SYS_ANDROID -DHILIVE_DEBUG $ADDI_CFLAGS -I$FDK_INC -I$X264_INC" \
 --extra-ldflags="$ADDI_LDFLAGS -L$FDK_LIB -L$X264_LIB" \
 $ADDITIONAL_CONFIGURE_FLAG
 
