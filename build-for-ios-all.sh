@@ -3,7 +3,7 @@
 # directories
 BASE_DIR=$(cd `dirname $0`; pwd)
 DEPLOYMENT_TARGET="8.0"
-FFMPEG_DIR=$BASE_DIR/binary/ios/ffmpeg/
+BINARY_DIR=$BASE_DIR/binary/ios/ffmpeg/
 OUTPUT_DIR=$BASE_DIR/output/ios/
 
 function install_tool
@@ -34,8 +34,6 @@ function build_ffmpeg
 {
 install_tool
 
-FFMPEG=$BASE_DIR/ffmpeg-4.3
-
 CONFIGURE_FLAGS="--enable-cross-compile \
 --disable-debug \
 --disable-programs \
@@ -53,20 +51,19 @@ CONFIGURE_FLAGS="--enable-cross-compile \
 --disable-gpl \
 --disable-version3 \
 --disable-nonfree \
+--disable-avdevice \
 --enable-small \
 --enable-static \
 --enable-asm \
 --enable-neon \
 --enable-filters \
---enable-videotoolbox \
---enable-encoder=h264_videotoolbox \
 --extra-cflags=-g \
 --extra-cflags=-gline-tables-only \
 "
 
 ARCHS="arm64 x86_64"
 
-cd $FFMPEG
+cd $BASE_DIR/../ffmpeg-4.3
 
 for ARCH in $ARCHS
 do
@@ -100,9 +97,9 @@ do
 	CXXFLAGS="$CFLAGS"
 	LDFLAGS="$CFLAGS"
 
-	BINARY_DIR=$FFMPEG_DIR/$ARCH
-
-	TMPDIR=${TMPDIR/%\/} $FFMPEG/configure \
+	echo "building fat binaries..."
+#	TMPDIR=${TMPDIR/%\/} ./configure \
+	./configure \
 			--target-os=darwin \
 			--arch=$ARCH \
 			--cc="$CC" \
@@ -110,11 +107,10 @@ do
 			$CONFIGURE_FLAGS \
 			--extra-cflags="$CFLAGS" \
 			--extra-ldflags="$LDFLAGS" \
-			--prefix="$BINARY_DIR" \
+			--prefix="$BINARY_DIR/$ARCH" \
 	|| exit 1
 
 	make -j8 install $EXPORT || exit 1
-	cd $CWD
 done
 
 cd $BASE_DIR
@@ -122,14 +118,13 @@ cd $BASE_DIR
 
 function merge_lib
 {
-echo "building fat binaries..."
+echo "merge lib"
 mkdir -p $OUTPUT_DIR/lib
 set - $ARCHS
-CWD=`pwd`
 cd $BINARY_DIR/$1/lib
 for LIB in *.a
 do
-	cd $CWD
+	cd $BASE_DIR
 	echo lipo -create `find $BINARY_DIR -name $LIB` -output $OUTPUT_DIR/lib/$LIB 1>&2
 	lipo -create `find $BINARY_DIR -name $LIB` -output $OUTPUT_DIR/lib/$LIB || exit 1
 done
