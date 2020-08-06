@@ -216,8 +216,8 @@ FFMPEG_LIB=$FFMPEG_DIR/lib
 
 OUTPUT_DIR=$BASE_DIR/output/android/$CPU
 
-#build_fdkaac
-#build_x264
+build_fdkaac
+build_x264
 build_ffmpeg
 merge_lib
 }
