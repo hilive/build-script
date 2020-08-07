@@ -69,7 +69,7 @@ cd $BASE_DIR
 
 function build_ffmpeg
 {
-cd ../ffmpeg-3.3
+cd ../ffmpeg-4.3
 
 ./configure \
 --prefix=$FFMPEG_DIR \
