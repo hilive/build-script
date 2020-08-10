@@ -63,7 +63,7 @@ CONFIGURE_FLAGS="--enable-cross-compile \
 
 ARCHS="arm64 x86_64"
 
-cd $BASE_DIR/../ffmpeg-4.3
+cd $BASE_DIR/../ffmpeg-hardcode
 
 for ARCH in $ARCHS
 do
