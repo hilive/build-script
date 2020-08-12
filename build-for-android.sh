@@ -15,6 +15,7 @@ echo "BASE_DIR="$BASE_DIR
 
 rm -f $BASE_DIR/compat/strtod.o
 
+
 function build_fdkaac
 {
 cd ../fdk-aac
@@ -103,7 +104,6 @@ cd ../ffmpeg-hardcode
 --disable-ffprobe \
 --disable-ffplay \
 --disable-ffmpeg \
---disable-ffserver \
 --disable-debug \
 --disable-symver \
 --disable-stripping \
@@ -117,12 +117,12 @@ cd ../ffmpeg-hardcode
 --enable-static \
 --enable-small \
 --enable-neon \
+--enable-openssl \
 --enable-network \
 --enable-protocol=http \
 --enable-protocol=https \
 --enable-protocol=rtsp \
 --enable-protocol=rtmp \
---enable-protocol=tls_protocol \
 --enable-avfilter \
 --enable-filters \
 --enable-swresample \
@@ -157,8 +157,8 @@ cd ../ffmpeg-hardcode
 --enable-bsf=aac_adtstoasc \
 --enable-bsf=h264_mp4toannexb \
 --enable-protocol=file \
---extra-cflags="-O3 -finline-limit=1000 -fPIC -DANDROID -DHILIVE_SYS_ANDROID -DHILIVE_DEBUG $ADDI_CFLAGS -I$FDK_INC -I$X264_INC" \
---extra-ldflags="$ADDI_LDFLAGS -L$FDK_LIB -L$X264_LIB" \
+--extra-cflags="-O3 -finline-limit=1000 -fPIC -DANDROID -DHILIVE_SYS_ANDROID -DHILIVE_DEBUG $ADDI_CFLAGS -I$FDK_INC -I$X264_INC -I$SSL_INC" \
+--extra-ldflags="$ADDI_LDFLAGS -L$FDK_LIB -L$X264_LIB -L$SSL_LIB" \
 $ADDITIONAL_CONFIGURE_FLAG
 
 make clean
@@ -176,6 +176,7 @@ mkdir -p $OUTPUT_DIR/include
 mkdir -p $OUTPUT_DIR/lib
 
 echo "CROSS_COMPILE="$CROSS_COMPILE
+echo "SSL_DIR="$SSL_DIR
 echo "FDK_DIR="$FDK_DIR
 echo "X264_DIR="$X264_DIR
 echo "FFMPEG_DIR="$FFMPEG_DIR
@@ -186,6 +187,8 @@ echo "merge lib ..."
 cp -r $FFMPEG_INC/* $OUTPUT_DIR/include
 
 ${CROSS_COMPILE}ld -rpath-link=$SYSROOT/usr/lib -L$SYSROOT/usr/lib -L$PREFIX/lib -soname $OUTPUT_NAME -shared -nostdlib -Bsymbolic --whole-archive --no-undefined -o $OUTPUT_DIR/lib/$OUTPUT_NAME \
+    $SSL_LIB/libssl.a \
+    $SSL_LIB/libcrypto.a \
     $FDK_LIB/libfdk-aac.a \
     $X264_LIB/libx264.a \
     $FFMPEG_LIB/libavcodec.a \
@@ -202,6 +205,10 @@ function build_one
 {
 CROSS_COMPILE=${TOOLCHAIN}/bin/${CROSS_PREFIX_BUILD_TOOL_PATH}
 
+SSL_DIR=$BASE_DIR/binary/android/openssl/$CPU
+SSL_INC=$SSL_DIR/include
+SSL_LIB=$SSL_DIR/lib
+
 FDK_DIR=$BASE_DIR/binary/android/fdkaac/$CPU
 FDK_INC=$FDK_DIR/include
 FDK_LIB=$FDK_DIR/lib
@@ -216,9 +223,10 @@ FFMPEG_LIB=$FFMPEG_DIR/lib
 
 OUTPUT_DIR=$BASE_DIR/output/android/$CPU
 
-build_fdkaac
-build_x264
-build_ffmpeg
+#./build-openssl-android.sh $ARCH
+#build_fdkaac
+#build_x264
+#build_ffmpeg
 merge_lib
 }
 
