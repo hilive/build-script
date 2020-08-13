@@ -226,7 +226,7 @@ OUTPUT_DIR=$BASE_DIR/output/android/$CPU
 #./build-openssl-android.sh $ARCH
 #build_fdkaac
 #build_x264
-#build_ffmpeg
+build_ffmpeg
 merge_lib
 }
 
