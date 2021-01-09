@@ -1,1 +1,1 @@
-# ffmpeg-build
+# build script
