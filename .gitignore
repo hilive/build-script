@@ -1,3 +1,4 @@
 binary/
 output/
 config.log
+protobuf/
