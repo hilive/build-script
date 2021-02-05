@@ -144,6 +144,55 @@ cd ../ffmpeg-hardcode
 --enable-decoder=h264 \
 --enable-decoder=mp3 \
 --enable-decoder=ape \
+--enable-demuxer=pcm_alaw \
+--enable-demuxer=pcm_f32be \
+--enable-demuxer=pcm_f32le \
+--enable-demuxer=pcm_f64be \
+--enable-demuxer=pcm_f64le \
+--enable-demuxer=pcm_mulaw \
+--enable-demuxer=pcm_s16be \
+--enable-demuxer=pcm_s16le \
+--enable-demuxer=pcm_s24be \
+--enable-demuxer=pcm_s24le \
+--enable-demuxer=pcm_s32be \
+--enable-demuxer=pcm_s32le \
+--enable-demuxer=pcm_s8 \
+--enable-demuxer=pcm_u16be \
+--enable-demuxer=pcm_u16le \
+--enable-demuxer=pcm_u24be \
+--enable-demuxer=pcm_u24le \
+--enable-demuxer=pcm_u32be \
+--enable-demuxer=pcm_u32le \
+--enable-demuxer=pcm_u8 \
+--enable-decoder=pcm_alaw \
+--enable-decoder=pcm_f32be \
+--enable-decoder=pcm_f32le \
+--enable-decoder=pcm_f64be \
+--enable-decoder=pcm_f64le \
+--enable-decoder=pcm_lxf \
+--enable-decoder=pcm_mulaw \
+--enable-decoder=pcm_s16be \
+--enable-decoder=pcm_s16be_planar \
+--enable-decoder=pcm_s16le \
+--enable-decoder=pcm_s16le_planar \
+--enable-decoder=pcm_s24be \
+--enable-decoder=pcm_s24daud \
+--enable-decoder=pcm_s24le \
+--enable-decoder=pcm_s24le_planar \
+--enable-decoder=pcm_s32be \
+--enable-decoder=pcm_s32le \
+--enable-decoder=pcm_s32le_planar \
+--enable-decoder=pcm_s8 \
+--enable-decoder=pcm_s8_planar \
+--enable-decoder=pcm_u16be \
+--enable-decoder=pcm_u16le \
+--enable-decoder=pcm_u24be \
+--enable-decoder=pcm_u24le \
+--enable-decoder=pcm_u32be \
+--enable-decoder=pcm_u32le \
+--enable-decoder=pcm_u8 \
+--enable-decoder=wavpack \
+--enable-decoder=wav \
 --enable-demuxer=mp3 \
 --enable-demuxer=aac \
 --enable-demuxer=h264 \
@@ -232,7 +281,7 @@ OUTPUT_DIR=$BASE_DIR/output/android/$CPU
 #./build-openssl-for-android.sh $ARCH
 #build_fdkaac
 #build_x264
-#build_ffmpeg
+build_ffmpeg
 merge_lib
 }
 
