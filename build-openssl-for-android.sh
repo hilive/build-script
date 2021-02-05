@@ -2,7 +2,7 @@
 
 BASE_DIR=$(cd `dirname $0`; pwd)
 
-OPENSSL_PATH=../openssl-1.1.1d
+OPENSSL_PATH=../openssl
 #输出路径
 PREFIX=$BASE_DIR/binary/android/openssl
 COMP_BUILD=$1
