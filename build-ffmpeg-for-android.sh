@@ -143,6 +143,7 @@ cd ../ffmpeg-hardcode
 --enable-decoder=hevc \
 --enable-decoder=h264 \
 --enable-decoder=mp3 \
+--enable-decoder=ape \
 --enable-demuxer=mp3 \
 --enable-demuxer=aac \
 --enable-demuxer=h264 \
@@ -151,6 +152,11 @@ cd ../ffmpeg-hardcode
 --enable-demuxer=m4v \
 --enable-demuxer=mov \
 --enable-demuxer=wmv \
+--enable-demuxer=ogg \
+--enable-demuxer=flac \
+--enable-demuxer=ape \
+--enable-demuxer=wav \
+--enable-demuxer=amr \
 --enable-muxer=mp4 \
 --enable-muxer=adts \
 --enable-parser=aac \
@@ -223,10 +229,10 @@ FFMPEG_LIB=$FFMPEG_DIR/lib
 
 OUTPUT_DIR=$BASE_DIR/output/android/$CPU
 
-./build-openssl-for-android.sh $ARCH
-build_fdkaac
-build_x264
-build_ffmpeg
+#./build-openssl-for-android.sh $ARCH
+#build_fdkaac
+#build_x264
+#build_ffmpeg
 merge_lib
 }
 
